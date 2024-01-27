@@ -8,8 +8,11 @@
     "watch": "ng build --watch --configuration development",
     "test": "./node_modules/.bin/ng test --watch=false",
     "e2e": "ng e2e",
-    "cypress:open": "cypress open",
-    "cypress:run": "cypress run"
+  
+      "cypress:run": "node_modules/.bin/cypress run",
+      "cypress:open": "node_modules/.bin/cypress open"
+    
+        
   },
   "private": true,
   "dependencies": {
