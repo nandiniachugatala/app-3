@@ -1,0 +1,76 @@
+pipeline {
+    agent {
+        docker {
+            //image 'node:18-alpine'
+             image 'cypress/base:18.16.0'
+            args '-u root:root'
+            reuseNode true
+        }
+    }
+
+    environment {
+        GIT_URL = 'https://github.com/nandiniachugatala/app-3.git'
+        EMAIL_TO = 'nandiniachugatla@gmail.com'
+        EMAIL_FROM = 'nandiniachugatla@gmail.com'
+        EMAIL_SUBJECT = 'Notify - Angular project Build Successful'
+        EMAIL_BODY = 'Angular project Build Successful done.'
+        EMAIL_CC = ''
+        EMAIL_BCC = ''
+        EMAIL_REPLY_TO = ''
+    }
+
+    stages {
+        stage('Node Version') {
+            steps {
+                sh 'node --version'
+            }
+        }
+
+        stage('Getting Repo from GitHub') {
+            steps {
+                git url: env.GIT_URL
+            }
+        }
+
+        stage('Build Project') {
+            steps {
+                sh 'rm -rf node_modules'
+                sh 'npm cache clean --force'
+                sh 'npm install'
+            }
+        }
+        
+        stage('Notify Build Success') {
+            steps {
+                mail to: env.EMAIL_TO, cc: env.EMAIL_CC, bcc: env.EMAIL_BCC,
+                     from: env.EMAIL_FROM, replyTo: env.EMAIL_REPLY_TO,
+                     subject: env.EMAIL_SUBJECT, body: env.EMAIL_BODY
+            }
+        }
+
+
+        stage('Run Test') {
+            steps {
+            sh 'npm start &'
+
+            // Wait for Angular application to start
+            sh 'npx wait-on http://localhost:4200'
+
+            // Run Cypress tests
+            sh 'NO_COLOR=1 npx cypress run'
+
+            sh 'pkill -f "npm start"'
+
+
+            }
+        }
+        
+         stage('Deploy Project') {
+            steps {
+                sh 'npm run build'
+            }
+        }
+
+
+    }
+}
