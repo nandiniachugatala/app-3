@@ -7,17 +7,27 @@
     <groupId>com.example</groupId>
     <artifactId>app-3</artifactId>
     <version>1.0.0</version>
-    <packaging>jar</packaging>
+        <packaging>war</packaging> <!-- Indicates this is a parent project -->
 
     <!-- Other Maven configurations -->
 
     <build>
+    
         <plugins>
+            
+            <plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-war-plugin</artifactId>
+    <version>3.3.2</version> <!-- or any compatible version -->
+</plugin>
+
             <!-- Plugin to build and package the frontend during Maven build -->
+
             <plugin>
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>
     <version>1.15.0</version>
+
                 <configuration>
                     <workingDirectory>${project.basedir}</workingDirectory>
                     <installDirectory>target</installDirectory>
