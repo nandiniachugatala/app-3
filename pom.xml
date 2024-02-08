@@ -11,56 +11,147 @@
 
     <!-- Other Maven configurations -->
 
-    <build>
-        <plugins>
-            <!-- Plugin to build and package the frontend during Maven build -->
+    <profiles>
+        <!-- Profile for installing Node.js and npm -->
+        <profile> 
+            <id>angular-install</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation> 
+            <build>
+                <resources>
+                    <resource>
+                        <directory>dist</directory>
+                    </resource>
+                </resources>
+                <plugins>
+                    <!-- Plugin to install Node.js and npm -->
+                    <plugin>
+                        <groupId>com.github.eirslett</groupId>
+                        <artifactId>frontend-maven-plugin</artifactId>
+                        <version>1.15.0</version>
+                        <configuration>
+                            <installDirectory>target</installDirectory>
+                            <npmInheritsProxyConfigFromMaven>false</npmInheritsProxyConfigFromMaven>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>install node and npm</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>install-node-and-npm</goal>
+                                </goals>
+                                <configuration>
+                                    <nodeVersion>v18.19.0</nodeVersion>
+                                    <npmVersion>10.2.3</npmVersion>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>npm install</id>
+                                <goals>
+                                    <goal>npm</goal>
+                                </goals>
+                                <configuration>
+                                    <arguments>install</arguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- Profile for building Angular project -->
+        <profile> 
+            <id>angular-build</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation> 
+            <build>
+                <resources>
+                    <resource>
+                        <directory>dist</directory>
+                    </resource>
+                </resources>
+                <plugins>
+                    <!-- Plugin to build Angular project -->
+
+                    <plugin>
+                        <groupId>com.github.eirslett</groupId>
+                        <artifactId>frontend-maven-plugin</artifactId>
+                        <version>1.15.0</version>
+                        <configuration>
+                            <installDirectory>target</installDirectory>
+                            <npmInheritsProxyConfigFromMaven>false</npmInheritsProxyConfigFromMaven>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>npm run build</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>npm</goal>
+                                </goals>
+                                <configuration>
+                                    <arguments>run build</arguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>docker-image</id>
+            <build>
+            <plugins>
+            <!-- JIB plugin for Docker image creation -->
             <plugin>
-                <groupId>com.github.eirslett</groupId>
-                <artifactId>frontend-maven-plugin</artifactId>
-    <version>1.15.0</version>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>3.4.0</version> <!-- Use the latest version -->
                 <configuration>
-                    <workingDirectory>${project.basedir}</workingDirectory>
-                    <installDirectory>target</installDirectory>
+                    <from>
+                        <image>nginx:latest</image> <!-- Use nginx as the base image -->
+                    </from>
+                    <to>
+                        <image>angular:app-3</image> <!-- Set your desired image name and tag -->
+                        <tags>
+                            <tag>latest</tag> <!-- Optional: Set additional tags -->
+                        </tags>
+                    </to>
+
+                    <extraDirectories>
+                        <paths>
+                            <!-- Path to the directory containing your Angular build output (e.g., dist directory) -->
+                            <path>${project.basedir}/target</path>
+                        </paths>
+                    </extraDirectories>
+
                 </configuration>
                 <executions>
                     <execution>
-                        <id>install node and npm</id>
-                        <phase>generate-resources</phase>
+                        <phase>package</phase>
                         <goals>
-                            <goal>install-node-and-npm</goal>
+                            <goal>build</goal>
                         </goals>
-                        <configuration>
-                            <nodeVersion>v18.19.0</nodeVersion>
-                            <npmVersion>10.2.3</npmVersion>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>npm install</id>
-                        <phase>generate-resources</phase>
-
-                        <goals>
-                            <goal>npm</goal>
-                        </goals>
-                        <configuration>
-                            <arguments>install</arguments>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>npm run build</id>
-                        <phase>generate-resources</phase>
-
-                        <goals>
-                            <goal>npm</goal>
-                        </goals>
-                        <configuration>
-                            <arguments>run build</arguments>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
         </plugins>
     </build>
+</profile>
 
+
+
+        <!-- Profile for creating Docker image using JIB -->
     <!-- Other dependencies and configurations for the Spring Boot backend -->
+</profiles>
+<distributionManagement>
+        <repository>
+            <id></id>
+            <url></url>
+        </repository>
+    </distributionManagement>
+
 
 </project>

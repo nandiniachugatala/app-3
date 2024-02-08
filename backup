@@ -1,0 +1,128 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.example</groupId>
+    <artifactId>app-3</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
+
+    <!-- Other Maven configurations -->
+
+    <profiles>
+        <profile> 
+
+        <id> angular-install </id>
+        <activation>
+            <activeByDefault>false</activeByDefault>
+        </activation> 
+        <build>
+        <resources>
+             <resource>
+       
+              <directory> dist</directory>
+            </resource>
+    </resources>
+        <plugins>
+            <!-- Plugin to build and package the frontend during Maven build -->
+            <plugin>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                 <version>1.15.0</version>
+
+                 
+                <configuration>
+                    <!-- <workingDirectory>${project.basedir}</workingDirectory> -->
+                    <installDirectory>target</installDirectory>
+                    <npmInheritsProxyConfigFromMaven> false </npmInheritsProxyConfigFromMaven>
+
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>install node and npm</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>install-node-and-npm</goal>
+                        </goals>
+                        <configuration>
+                            <nodeVersion>v18.19.0</nodeVersion>
+                            <npmVersion>10.2.3</npmVersion>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>npm install</id>
+
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>install</arguments>
+                        </configuration>
+                    </execution>
+
+
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+  </profile>
+
+<profile> 
+
+    <id>angular-build</id>
+    <activation>
+        <activeByDefault>false</activeByDefault>
+    </activation> 
+    <build>
+        <resources>
+             <resource>
+       
+              <directory> dist</directory>
+            </resource>
+        </resources>
+        <plugins>
+            <!-- Plugin to build and package the frontend during Maven build -->
+            <plugin>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                 <version>1.15.0</version>
+                <configuration>
+                    <!-- <workingDirectory>${project.basedir}</workingDirectory> -->
+                    <installDirectory>target</installDirectory>
+                    <npmInheritsProxyConfigFromMaven> false </npmInheritsProxyConfigFromMaven>
+                </configuration>
+                <executions>
+
+
+                    <execution>
+
+                        <id>npm run build</id>
+                        <phase>generate-resources</phase>
+
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>run build</arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+  </profile>
+</profiles>
+
+
+
+   
+
+    <!-- Other dependencies and configurations for the Spring Boot backend -->
+
+</project>
+
+
+

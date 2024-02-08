@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "./node_modules/.bin/ng serve",
-    "build": "./node_modules/.bin/ng build",
+    "build": "./node_modules/.bin/ng build --output-path dist/META-INF/resources",
     "watch": "ng build --watch --configuration development",
     "test": "./node_modules/.bin/ng test --watch=false",
     "e2e": "ng e2e",
